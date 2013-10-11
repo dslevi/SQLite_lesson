@@ -18,12 +18,12 @@ def make_new_project(title, max_grade, description):
     print "Successfully added project: %s" % (title)
 
 def get_student_by_github(github):
+    print github
     query = """SELECT first_name, last_name, github FROM Students WHERE github = ?"""
     DB.execute(query, (github,))
     row = DB.fetchone()
-    print """\
-Student: %s %s
-Github account: %s"""%(row[0], row[1], row[2])
+    print row
+    return row
     
 def get_project_title(title):
     query = """SELECT * FROM Projects WHERE title = ?"""
@@ -54,14 +54,15 @@ def give_student_grade(student, title, grade):
         print "Successfully added grade to: %s" % (grade)
 
 def get_all_grades(student):
-    query = """SELECT grade FROM Grades WHERE student_github = ?"""
+    query = """SELECT project_title, grade FROM Grades WHERE student_github = ?"""
     DB.execute(query, (student,))
-    grades = DB.fetchall()
-    print "Student: %s" % (student)
-    print "Grades: ",
-    for grade in grades:
-        print grade[0],
-    print " "
+    projects_grades = DB.fetchall()
+    projects_grades_str = ""
+    # string_list = []
+    for x in projects_grades:
+        projects_grades_str += str(x[0]) + ": " + str(x[1]) +"\n"
+        # string_list.append
+    return projects_grades_str
 
 def connect_to_db():
     global DB, CONN
